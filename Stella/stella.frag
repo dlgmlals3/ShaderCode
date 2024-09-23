@@ -1,7 +1,3 @@
-// getDist, getDist2 차이점 다시 분석
-// 선이 찌그러져있음... 고치자
-// 선이 반짝반짝 하게만든는 것 고치자.
-
 float N12(vec2 p) {
   p = fract(p * vec2(12.242, 32.35));
   p += dot(p, p + 341.43);
@@ -60,7 +56,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     for (float x=-1.; x<=1.; x+=1.) {
       for (float y=-1.; y<=1.; y+=1.) {
         p[i++] = getPos(id, vec2(x,y));
-      
+      }
     }
     
     float lw= 0.03;
@@ -74,6 +70,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     col = m1 * vec3(1);
     //if (st.x > 0.45 || st.y > 0.45) col = vec3(1,0,0);
-    //col  = N12(uv) * vec3(1);
-    fragColor = vec4(col,1.0);
+    col  = N12(uv) * vec3(1);
+    fragColor = vec4(col, 1.0);
 }
