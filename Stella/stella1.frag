@@ -1,3 +1,5 @@
+// 구슬이 해당 영역내에서 움직이는 씬
+
 float N12(vec2 p) {
     p = fract(p * vec2(3521.2, 2414.5));
     p += dot(p, p + 152.5);
@@ -24,6 +26,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 id = floor(uv * repeat);
 
     vec2 st2 = getPos(id, st);
+    
+    // length(st)는 빨간사각형 안의 내부 점하나!!
+    // float f = smoothstep(0.1, 0.05, length(st));
+    
     float f = smoothstep(0.1, 0.05, length(st2));
     float outline = 0.;
     if (st.x < -.45 || st.y > .45) outline = 1.;
