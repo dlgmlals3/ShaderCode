@@ -1,9 +1,7 @@
-// 다시 점검
-// Fade in Fade out
-// rotate uv
-// uv mouse effect
-// 별자리 color 작업
-// 별자리 그레디언트 작업
+// 0. Layer
+// 1. Fade in Fade out
+// 3, roatate uv, uv mouse effect
+// 4. 별자리 color 작업, 별자리 그레디언트 작업
 
 float N12(vec2 p) {
     p = fract(p * vec2(243.21, 152.1));
@@ -25,13 +23,12 @@ float getDist(vec2 p, vec2 a, vec2 b) {
 }
 
 float renderLine(vec2 p, vec2 a, vec2 b, float width) {
-    float d = getDist(p, a, b);
-    float line = smoothstep(width * 1.5, width, d);
+    float d = getDist(p, a, b); 
+    float line = smoothstep(width, width * .9, d);
     float dist2 = length(a - b);
     
-    float alpha = smoothstep(1.2, .5, dist2);
-    line = line * alpha * .5;
-    //line += smoothstep(.05, .03, abs(dist2 - 3.75)); 
+    float alpha = smoothstep(1., .5, dist2);
+    line *= alpha;
     return line;
 }
 
@@ -42,7 +39,7 @@ vec2 getPos(vec2 id, vec2 offset) {
 }
 
 float layer(vec2 uv) {
-    vec2 repeat = vec2(6);
+    vec2 repeat = vec2(7.);
     vec2 st = fract(uv * repeat) - .5;
     vec2 id = floor(uv * repeat);
 
@@ -56,7 +53,7 @@ float layer(vec2 uv) {
     }
 
     float line = 0.;    
-    float lw= 0.02;
+    float lw= 0.015;
     float t = iTime * 5.;
 
     for (int i=0; i<9; i++) {
@@ -80,27 +77,29 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 col = vec3(0);    
    
     float t = iTime * .1; 
-    float gradient = uv.y;
-    
+    float gradient = -uv.y;
     // rotation
     float s = sin(t);
     float c = cos(t);
     mat2 rot = mat2(c, -s, s, c);
     uv *= rot;
     mouse *= rot;
+    
     float line = 0.;
-  
-    for (float i=0.; i<1.; i+= 1./4.) {
+    
+    for (float i=0.; i<=1.; i += 1./4.) {
         float z = fract(i + t);
-        float size = mix(1.5, .5, z);
-        float fade = smoothstep(0., .2, z) * smoothstep(1., .8, z);
-        line += layer(uv * size + i * 10. - mouse) * fade;
+        float size = mix(1.5, .15, z);// 10.
+        float fade = smoothstep(0., .5, z) * smoothstep(1., .8, z);
+        vec2 uv2 = (uv * size + i * 10. - mouse);    
+        line += layer(uv2) * fade;
     }
     
-    // color
-    vec3 base = sin(t * vec3(.345, .456, .657)) * .4 + .6;
+     // color
+    float period = iTime * 5.;
+    vec3 base = sin(period * vec3(.345, .456, .657)) * .4 + .6;
+    
     col = line * base;
-    col += -gradient * base;
-    //col = vec3(1) * renderLine(uv, vec2(0.), vec2(.2), .1);
+    col += gradient * base;
     fragColor = vec4(col, 1.0);
 }
