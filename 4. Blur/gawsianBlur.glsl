@@ -1,3 +1,16 @@
+// glsl-canvas
+// 3 x 3 가우시안 커널 싱글 패스 가우시안 블러
+// https://www.sciencedirect.com/topics/engineering/gaussian-blur
+// 차수가 높을수록 흐려진다.
+// 
+// 만일 가우시안 차수를 고정시킨다면 궂이 가우시안 가중치를 계산할 필요가 없다.
+// 가우시안 함수의 값을 사용하여 생성한 카우시안 커널을 생성한다.
+// 3 x 3 가우시안 커널은 다음과 같이 나타낸다.
+/*
+1/16 [ 1, 2, 1]
+     [ 2, 4, 2]
+     [ 1, 2, 1]
+*/
 
 #extension GL_OES_standard_derivatives : enable
 
@@ -28,22 +41,7 @@ void main() {
     vec2 imageResolution = vec2(438, 448);
     vec2 texelSize = 1. / imageResolution;
 
-    const float kernelSize = 3.0;
     vec3 boxBlurColor = vec3(0.0);
-
-    float boxBlurDivisor = pow(2.0 * kernelSize + 1.0 , 2.0);
-    // kernelSize = 1.0, then boxBlurDivisor = 9.0 // 3 by 3
-    // kernelSize = 2.0, then boxBlurDivisor = 25.0 // 4 by 4  
-    // kernelSize = 3.0, then boxBlurDivisor = 49.0 // 6 by 6
-    
-    for (float i = -kernelSize; i <= kernelSize; i++) {
-        for (float j = -kernelSize; j <= kernelSize; j++) {
-            vec4 texture = texture2D(u_texture, uv + vec2(i, j) * texelSize);
-            boxBlurColor = boxBlurColor + texture.rgb;
-        }
-    }
-    boxBlurColor /= boxBlurDivisor;
-    color = boxBlurColor;
 
     float gaussianDivisor = 16.0;
     vec3 gaussianBlurColor = vec3(0.0);

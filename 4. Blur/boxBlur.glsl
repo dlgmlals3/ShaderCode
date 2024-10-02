@@ -1,3 +1,9 @@
+// glsl-canvas
+// 싱글 패스박스 블러
+// 내 픽셀 주위로 정사각형태의 픽셀을 얼마나 반영할 것인가 ?
+// 3 x 3 커널 : 한변의 길이 7 (-3 ~ 3), 1픽셀 계산할때 총 49번의 연산
+// 전부 더해주고 마지막에 더한 픽셀의 개수 만큼 boxBlurDivisor로 나누어 줌.
+// float boxBlurDivisor = pow(2.0 * kernelSize + 1.0 , 2.0);
 
 #extension GL_OES_standard_derivatives : enable
 
@@ -28,7 +34,7 @@ void main() {
     vec2 imageResolution = vec2(438, 448);
     vec2 texelSize = 1. / imageResolution;
 
-    const float kernelSize = 3.0;
+    const float kernelSize = 5.0;
     vec3 boxBlurColor = vec3(0.0);
 
     float boxBlurDivisor = pow(2.0 * kernelSize + 1.0 , 2.0);
