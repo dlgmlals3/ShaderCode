@@ -44,5 +44,19 @@ void main() {
     }
     boxBlurColor /= boxBlurDivisor;
     color = boxBlurColor;
+
+    float gaussianDivisor = 16.0;
+    vec3 gaussianBlurColor = vec3(0.0);
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(-1, 1) * texelSize).rgb * 1.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(0, 1) * texelSize).rgb * 2.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(1, 1) * texelSize).rgb * 1.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(-1, 0) * texelSize).rgb * 2.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(0, 0) * texelSize).rgb * 4.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(1, 0) * texelSize).rgb * 2.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(-1, -1) * texelSize).rgb * 1.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(0, -1) * texelSize).rgb * 2.0;
+    gaussianBlurColor += texture2D(u_texture, uv + vec2(1, -1) * texelSize).rgb * 1.0;
+    gaussianBlurColor /= gaussianDivisor;
+    color = gaussianBlurColor;
     gl_FragColor = vec4(color, 1.0);
 }
