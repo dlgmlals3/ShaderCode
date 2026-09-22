@@ -12,7 +12,7 @@
 
 // Tomorrow
 
-#define NUM_PARTICLE 50.
+#define NUM_PARTICLE 95.
 #define NUM_EXPLOSION 5.
  
 vec2 Hash12(float t) {
