@@ -34,31 +34,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float wave = sin(depth * 2.0 - iTime * 2.0);
     float laser = sin(deg * 13.0 + iTime * 2.8);
     float farRadius = smoothstep(0.0, 0.05, r);
-    // [TODO 1] glow용 원본값 보관
-    //   - smoothstep을 거치면 wave/laser가 0~1 마스크로 바뀌어서
-    //     "선 중심에서 얼마나 떨어졌는지" 정보가 사라진다.
-    //   - smoothstep 하기 전의 sin 값을 다른 변수에 따로 남겨둘 것.
-    //     (예: waveRaw, laserRaw 같은 이름)
-    //   - 선의 중심은 sin이 1.0인 곳이므로, glow 분모에는
-    //     abs(1.0 - raw) 또는 (1.0 - raw)를 쓰면 중심에서 0이 된다.
 
     float wavec = smoothstep(0.7, 0.95, wave);
     float laserc = smoothstep(0.3, 0.95, laser);
     float mask = mix(wavec, 1.0, laserc) * farRadius;
 
     // [TODO 2] 선 주변 glow 만들기
-    //   - glow = 작은수 / (선 중심과의 거리 + 작은수)
-    //   - wave용, laser용 각각 하나씩 만든다.
-    //   - "작은수"를 0.01, 0.05, 0.1로 바꿔보며 번짐 폭이 어떻게 변하는지 볼 것.
-    //   - 두 glow도 mask처럼 screen(mix(a, 1.0, b))이나 덧셈으로 합친다.
-    //   - farRadius를 곱해서 중심 구멍은 그대로 어둡게 유지한다.
     float glow = 0.2 / (abs(wave) + 0.535);
     glow = glow * farRadius;
 
     // [TODO 3] 중심 glow 만들기
-    //   - centerGlow = 작은수 / (r + 작은수)
-    //   - 터널 끝(화면 중심)에서 빛이 새어나오는 느낌.
-    //   - 너무 세면 화면 전체가 하얘지니 작은수를 작게 잡을 것.
     float centerGlow = 0.01 / (r + 0.003);
 
     float t = sin(deg * 2.0 + iTime * 0.5) * 0.5 + 0.5;
@@ -67,13 +52,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     col = mix(waveColor, laserColor, t) * mask;
 
     // [TODO 4] hard line + glow 합치기
-    //   - col에 (색상 * glow)를 더한다. mask처럼 곱하는 게 아니라 "더하기".
-    //   - centerGlow는 흰색이나 waveColor에 곱해서 더해본다.
-    //   - 더한 뒤 값이 1.0을 넘는 픽셀이 생기는 게 정상이다. (다음 단계에서 누른다)
     col = col + (waveColor * glow) + (laserColor * centerGlow);
 
 
-// [TODO 5] 톤 매핑    
+    // [TODO 5] 톤 매핑    
     col = 1.0 - exp(-col);
     
     fragColor = vec4(col, 1.0);
