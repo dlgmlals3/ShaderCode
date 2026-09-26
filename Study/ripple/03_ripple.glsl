@@ -28,19 +28,31 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec3 col = vec3(0.0);
 
-    // -> 02_ripple.glsl 에서 완성한 코드를 아래에 옮겨 붙인다.
-
-
+    fragCoord = fragCoord - 0.5 * iResolution.xy;
+    vec2 uv = fragCoord / iResolution.y;
+    
+    
     // [TODO 1] 파원 위치
     //   - origin = vec2(0.0)로 시작한다.
     //   - iMouse.xy가 (0,0)이 아니면 origin을 uv와 같은 방식으로 변환한 마우스 좌표로 바꾼다.
     //   - r = length(uv - origin) 으로 고친다.
+    vec2 origin = vec2(0.5, 0.5);
+    if (iMouse.xy != vec2(0.0)) {
+        origin = (iMouse.xy - 0.5 * iResolution.xy) / iResolution.y;
+    }
+    float r = length(uv - origin);
+    float wave = sin(r * 40.0 - iTime * 5.0);
+    wave = wave * 0.5 + 0.5;
+    col = vec3(wave);
 
-    // [TODO 2] 감쇠
+    // [TODO 2]  감쇠
     //   - falloff = exp(-r * 3.0)
     //   - h = wave * falloff   (아직 -1~1)
     //   - col = vec3(h * 0.5 + 0.5)
     //   - 3.0을 1.0, 8.0으로 바꿔보고 무엇이 달라지는지 기록할 것.
+    float falloff = exp(-r * 15.0);
+    float h = wave * falloff;
+    col = vec3(h);
 
     fragColor = vec4(col, 1.0);
 }

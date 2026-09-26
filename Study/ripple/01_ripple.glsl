@@ -29,14 +29,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // [TODO 1] 중심 UV
     //   - fragCoord를 화면 중심이 (0,0)인 uv로 바꾼다. (Neon STEP 1과 같다)
     //   - x, y 모두 iResolution.y로 나눈다.
+    fragCoord = fragCoord - 0.5 * iResolution.xy;
+    vec2 uv = fragCoord / iResolution.y;
 
     // [TODO 2] 거리
     //   - r = length(uv)
+    float r = length(uv);
 
     // [TODO 3] fract 띠
+    float bands = fract(r * 35.0);
     //   - bands = fract(r * 5.0)
     //   - col = vec3(bands) 로 찍어서 확인한다.
     //   - 비교: col = vec3(sin(r * 30.0) * 0.5 + 0.5) 와 무엇이 다른지 볼 것.
 
+    // fract : 톱니 모양
+    // sin :부드러운 곡선
+    col = vec3(bands);
+    //col = vec3(sin(r * 100.0) * 0.5 + 0.5);
     fragColor = vec4(col, 1.0);
 }

@@ -25,10 +25,16 @@
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec3 col = vec3(0.0);
+    fragCoord = fragCoord - 0.5 * iResolution.xy;
+    vec2 uv = fragCoord / iResolution.y;
+    float r = length(uv);
 
-    // -> 01_ripple.glsl 에서 완성한 코드를 아래에 옮겨 붙인다. (bands 줄은 지워도 된다)
+    float bands = fract(r * 35.0);
+    float wave = sin(r *40.0 - iTime * 5.0);
 
+    float h = wave * 0.5 + 0.5;
 
+    col = vec3(h);
     // [TODO 1] 파동
     //   - wave = sin(r * 40.0 - iTime * 5.0)
     //   - 40.0은 촘촘함(freq), 5.0은 속도(speed).
